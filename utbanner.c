@@ -2,6 +2,11 @@
 
 int main(void)
 {
-    printf("Hello world!\n");
+    printf("  AAA   \n"
+           " AAAAA  \n"
+           "AA   AA \n"
+           "AAAAAAA \n"
+           "AA   AA \n");
+
     return 0;
 }
