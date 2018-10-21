@@ -7,12 +7,7 @@
 char ascii_art[16][ROWS][SIZE];
 
 void split_string(char array[ROWS][SIZE], char *s);
-void a(char array[ROWS][SIZE]);
-void h(char array[ROWS][SIZE]);
-void e(char array[ROWS][SIZE]);
-void l(char array[ROWS][SIZE]);
-void o(char array[ROWS][SIZE]);
-void ascii(char letter, char ascii_art[ROWS][SIZE]);
+void read_font(char letter, char letter_art[ROWS][SIZE]);
 
 int main(int argc, char **argv)
 {
@@ -29,7 +24,7 @@ int main(int argc, char **argv)
     for (i = 0; i < len; i++)
     {
         // Return array of substrings of current letter
-        ascii(str[i], ascii_art[i]);
+        read_font(str[i], ascii_art[i]);
     }
 
     // Print out the whole line ascii_art[i][j] in 3D array
@@ -70,69 +65,25 @@ void split_string(char array[ROWS][SIZE], char *s)
     strcpy(array[index], buf); // Copy the last substring to the array
 }
 
-// Create array of each letter
-void a(char array[ROWS][SIZE])
+// Read each character from font files list
+void read_font(char letter, char letter_art[ROWS][SIZE])
 {
-    char *a = "  AAA   \n AAAAA  \nAA   AA \nAAAAAAA \nAA   AA \n";
-    split_string(array, a);
-}
+    FILE *fp;
+    char  path[32];
+    char  buf[128];
+    int   size;
 
-void h(char array[ROWS][SIZE])
-{
-    char *h = "HH   HH \nHH   HH \nHHHHHHH \nHH   HH \nHH   HH \n";
-    split_string(array, h);
-}
+    sprintf(path, "./fonts/letters/%c", letter);
 
-void e(char array[ROWS][SIZE])
-{
-    char *e = "EEEEEEE \nEE      \nEEEEE   \nEE      \nEEEEEEE \n";
-    split_string(array, e);
-}
+    fp = fopen(path, "r");
 
-void l(char array[ROWS][SIZE])
-{
-    char *l = "LL      \nLL      \nLL      \nLL      \nLLLLLLL \n";
-    split_string(array, l);
-}
+    fseek(fp, 0, SEEK_END);
+    size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
 
-void o(char array[ROWS][SIZE])
-{
-    char *o = " OOOOO  \nOO   OO \nOO   OO \nOO   OO \n OOOO0  \n";
-    split_string(array, o);
-}
+    fread(buf, 1, size, fp);
+    buf[size] = '\0';
+    split_string(letter_art, buf);
 
-// Create array ASCII base on the letter
-void ascii(char letter, char letter_art[ROWS][SIZE])
-{
-    char buf[ROWS][SIZE];
-
-    switch (letter)
-    {
-        case 'h':
-        case 'H':
-            h(buf);
-            break;
-        case 'e':
-        case 'E':
-            e(buf);
-            break;
-        case 'l':
-        case 'L':
-            l(buf);
-            break;
-        case 'o':
-        case 'O':
-            o(buf);
-            break;
-        case 'a':
-        case 'A':
-            a(buf);
-            break;
-        default:
-            break;
-    }
-
-    // Copy each substrings to each rowumn/ element of struct array
-    for (int i = 0; i < ROWS; i++)
-        strcpy(letter_art[i], buf[i]);
+    fclose(fp);
 }
