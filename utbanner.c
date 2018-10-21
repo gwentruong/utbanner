@@ -8,6 +8,7 @@ char ascii_art[16][ROWS][SIZE];
 
 void split_string(char array[ROWS][SIZE], char *s);
 void read_font(char letter, char letter_art[ROWS][SIZE]);
+int alpha(char c);
 
 int main(int argc, char **argv)
 {
@@ -24,10 +25,12 @@ int main(int argc, char **argv)
 
         for (int i = 0; i < len; i++)
         {
-            // Return array of substrings of current letter
-            read_font(str[i], ascii_art[i]);
+            if (alpha(str[i]))
+            {
+                // Return array of substrings of current letter
+                read_font(str[i], ascii_art[i]);
+            }
         }
-
         // Print out the whole line ascii_art[i][j] in 3D array
         for (int j = 0; j < ROWS; j++)
         {
@@ -87,4 +90,13 @@ void read_font(char letter, char letter_art[ROWS][SIZE])
     split_string(letter_art, buf);
 
     fclose(fp);
+}
+
+// Check if the letter is alphabetical
+int alpha(char c)
+{
+    if ((c > 64 && c < 91) || (c > 96 && c < 123))
+        return 1;
+    else
+        return 0;
 }
