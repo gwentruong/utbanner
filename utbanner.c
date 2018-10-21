@@ -17,24 +17,25 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    char *str = argv[1];
-    int   len = strlen(str);
-    int   i, j;
-
-    for (i = 0; i < len; i++)
+    for (int k = 1; k < argc; k++)
     {
-        // Return array of substrings of current letter
-        read_font(str[i], ascii_art[i]);
-    }
+        char *str = argv[k];
+        int   len = strlen(str);
 
-    // Print out the whole line ascii_art[i][j] in 3D array
-    for (j = 0; j < ROWS; j++)
-    {
-        for (i = 0; i < len; i++)
-            printf("%s", ascii_art[i][j]);
-        printf("\n");
-    }
+        for (int i = 0; i < len; i++)
+        {
+            // Return array of substrings of current letter
+            read_font(str[i], ascii_art[i]);
+        }
 
+        // Print out the whole line ascii_art[i][j] in 3D array
+        for (int j = 0; j < ROWS; j++)
+        {
+            for (int i = 0; i < len; i++)
+                printf("%s", ascii_art[i][j]);
+            printf("\n");
+        }
+    }
     return 0;
 }
 
