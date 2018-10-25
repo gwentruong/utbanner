@@ -1,24 +1,40 @@
 #include <stdio.h>
 #include <string.h>
 
-#define ROWS 5
-#define SIZE 16
+#define ROWS     22
+#define SIZE     64
+#define FONT_NUM 2
 
 char ascii_art[16][ROWS][SIZE];
+char font_list[FONT_NUM][16] = {"letters", "alpha"};
 
-void split_string(char array[ROWS][SIZE], char *s);
-void read_font(char letter, char letter_art[ROWS][SIZE]);
+int check_font(char *font_style);
 int alpha(char c);
+void split_string(char array[ROWS][SIZE], char *s);
+void read_font(char letter, char *font_style, char letter_art[ROWS][SIZE]);
+
 
 int main(int argc, char **argv)
 {
-    if (argc == 1)
+    if (argc <= 2)
     {
-        printf("Usage: utbanner WORD\n");
+        printf("Usage: utbanner <font_style> <WORD>\n"
+                "Choost font_style:\n"
+                "letters\nalpha\n");
         return 1;
     }
 
-    for (int k = 1; k < argc; k++)
+    char *style = argv[1]; // Take the 1st argument for font style
+    int fonts = check_font(style);
+    if (fonts == -1)
+    {
+        printf("Invalid font_style: choose 'letters' or 'alpha'\n");
+        return 1;
+    }
+
+    int rows = fonts == 0 ? 5 : 22;
+
+    for (int k = 2; k < argc; k++)
     {
         char *str = argv[k];
         int   len = strlen(str);
@@ -28,11 +44,11 @@ int main(int argc, char **argv)
             if (alpha(str[i]))
             {
                 // Return array of substrings of current letter
-                read_font(str[i], ascii_art[i]);
+                read_font(str[i], style, ascii_art[i]);
             }
         }
         // Print out the whole line ascii_art[i][j] in 3D array
-        for (int j = 0; j < ROWS; j++)
+        for (int j = 0; j < rows; j++)
         {
             for (int i = 0; i < len; i++)
                 printf("%s", ascii_art[i][j]);
@@ -40,6 +56,35 @@ int main(int argc, char **argv)
         }
     }
     return 0;
+}
+
+// Checking for font style
+int check_font(char *font_style)
+{
+    int invalid = 0;
+    int font_index;
+    for (int i = 0; i < FONT_NUM; i++)
+    {
+        int check = strcmp(font_style, font_list[i]);
+        if (check) // Check != 0
+            invalid++;
+        else
+            font_index = i;
+    }
+
+    if (invalid == FONT_NUM)
+        return -1;
+    else
+        return font_index;
+}
+
+// Check if the letter is alphabetical
+int alpha(char c)
+{
+    if ((c > 64 && c < 91) || (c > 96 && c < 123))
+        return 1;
+    else
+        return 0;
 }
 
 // Split string into substrings and fill into array
@@ -70,14 +115,14 @@ void split_string(char array[ROWS][SIZE], char *s)
 }
 
 // Read each character from font files list
-void read_font(char letter, char letter_art[ROWS][SIZE])
+void read_font(char letter, char *font_style, char letter_art[ROWS][SIZE])
 {
     FILE *fp;
     char  path[32];
-    char  buf[128];
+    char  buf[1024];
     int   size;
 
-    sprintf(path, "./fonts/letters/%c", letter);
+    sprintf(path, "./fonts/%s/%c", font_style, letter);
 
     fp = fopen(path, "r");
 
@@ -90,13 +135,4 @@ void read_font(char letter, char letter_art[ROWS][SIZE])
     split_string(letter_art, buf);
 
     fclose(fp);
-}
-
-// Check if the letter is alphabetical
-int alpha(char c)
-{
-    if ((c > 64 && c < 91) || (c > 96 && c < 123))
-        return 1;
-    else
-        return 0;
 }
