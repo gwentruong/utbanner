@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define ROWS     22
 #define SIZE     64
@@ -9,33 +10,75 @@ char ascii_art[16][ROWS][SIZE];
 char font_list[FONT_NUM][16]    = {"letters", "alpha"};
 int  font_row_length[FONT_NUM]  = {5, 22};
 
+void menu(int n);
 int  get_font_index(char *font_style);
 int  alphabet(char c);
 void split_string(char array[ROWS][SIZE], char *s);
 void read_font(char letter, char *font_style, char letter_art[ROWS][SIZE]);
 
-
 int main(int argc, char **argv)
 {
-    if (argc <= 2)
+    if (argc <= 1)
     {
-        printf("Usage: utbanner <font_style> <WORD>\n"
-                "Choost font_style:\n"
-                "letters\nalpha\n");
+        menu(0); // Return help menu
         return 1;
     }
 
-    char *style = argv[1]; // Take the 1st argument for font style
-    int font_index = get_font_index(style);
-    if (font_index == -1)
+    char *option = argv[1];
+    char *font_style;
+    int font_index;
+    int rows;
+    int index;
+
+    if (strcmp(option, "--help") == 0)
     {
-        printf("Invalid font_style: choose 'letters' or 'alpha'\n");
-        return 1;
+        menu(0);
+        return 0;
+    }
+    else if (strcmp(option, "--version") == 0)
+    {
+        menu(1);
+        return 0;
+    }
+    else if (strcmp(option, "-f") == 0 || strcmp(option, "-i") == 0)
+    {
+        if (argc < 4)
+        {
+            printf("Error, check utbanner --help for valid commands\n");
+            return 1;
+        }
+
+        index = 3;
+        if (strcmp(option, "-f") == 0)
+        {
+            char *font = argv[2];
+            font_index = get_font_index(font);
+            if (font_index == -1)
+            {
+                rows = font_row_length[0];
+                font_style = font_list[0];
+            }
+            else
+            {
+                rows = font_row_length[font_index];
+                font_style = font;
+            }
+        }
+        else // option == "-i"
+        {
+            font_index = atoi(argv[2]); // If error, return index 0
+            font_style = font_list[font_index];
+            rows = font_row_length[font_index];
+        }
+    }
+    else
+    {
+        rows = font_row_length[0];
+        font_style = font_list[0];
+        index = 1;
     }
 
-    int rows = font_row_length[font_index];
-
-    for (int k = 2; k < argc; k++)
+    for (int k = index; k < argc; k++)
     {
         char *str = argv[k];
         int   len = strlen(str);
@@ -45,7 +88,7 @@ int main(int argc, char **argv)
             if (alphabet(str[i]))
             {
                 // Return array of substrings of current letter
-                read_font(str[i], style, ascii_art[i]);
+                read_font(str[i], font_style, ascii_art[i]);
             }
         }
         // Print out the whole line ascii_art[i][j] in 3D array
@@ -57,6 +100,31 @@ int main(int argc, char **argv)
         }
     }
     return 0;
+}
+
+// Help menu
+void menu(int n)
+{
+    if (n == 0) // Print help menu
+    {
+        printf("Usage: utbanner [options] [font] [word]\n"
+               "Default font: 'letters'\n"
+               "Fonts index:\n"
+               "0\tletters\n"
+               "1\talpha\n"
+               "Options:\n"
+               "-i\tChoose font by font index\n"
+               "-f\tChoose font by font name\n"
+               "--help\n\tPrint help menu\n"
+               "--version\n\tPrint the lastest version\n");
+    }
+    else // Print latest version
+    {
+        printf("utbanner v0.1\n"
+               "Copyright (C) 2018 Uyen Truong\n"
+               "Contact me if found bugs via haiuyentruong(at)gmail(dot)com\n");
+    }
+
 }
 
 // Checking for font style
