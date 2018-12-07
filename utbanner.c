@@ -54,7 +54,11 @@ int main(int argc, char **argv)
             font_index = get_font_index(font);
         }
         else // option == "-i"
+        {
             font_index = atoi(argv[2]); // If error, return index 0
+            if (font_index < 0 || font_index >= FONT_NUM)
+                font_index = 0;
+        }
 
         word_index = 3;
     }
