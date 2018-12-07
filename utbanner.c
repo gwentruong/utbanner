@@ -10,9 +10,9 @@ char ascii_art[16][ROWS][SIZE];
 char font_list[FONT_NUM][16]    = {"letters", "alpha"};
 int  font_row_length[FONT_NUM]  = {5, 22};
 
-void menu(int n);
+void help_menu(int n);
 int  get_font_index(char *font_style);
-int  alphabet(char c);
+int  is_alpha(char c);
 void split_string(char array[ROWS][SIZE], char *s);
 void read_font(char letter, char *font_style, char letter_art[ROWS][SIZE]);
 
@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 {
     if (argc <= 1)
     {
-        menu(0); // Return help menu
+        help_menu(0); // Return help menu
         return 1;
     }
 
@@ -28,68 +28,56 @@ int main(int argc, char **argv)
     char *font_style;
     int font_index;
     int rows;
-    int index;
+    int word_index;
 
     if (strcmp(option, "--help") == 0)
     {
-        menu(0);
+        help_menu(0);
         return 0;
     }
     else if (strcmp(option, "--version") == 0)
     {
-        menu(1);
+        help_menu(1);
         return 0;
     }
     else if (strcmp(option, "-f") == 0 || strcmp(option, "-i") == 0)
     {
         if (argc < 4)
         {
-            printf("Error, check utbanner --help for valid commands\n");
+            help_menu(0);
             return 1;
         }
 
-        index = 3;
         if (strcmp(option, "-f") == 0)
         {
             char *font = argv[2];
             font_index = get_font_index(font);
-            if (font_index == -1)
-            {
-                rows = font_row_length[0];
-                font_style = font_list[0];
-            }
-            else
-            {
-                rows = font_row_length[font_index];
-                font_style = font;
-            }
         }
         else // option == "-i"
         {
             font_index = atoi(argv[2]); // If error, return index 0
-            font_style = font_list[font_index];
-            rows = font_row_length[font_index];
         }
+
+        word_index = 3;
+        rows = font_row_length[font_index];
+        font_style = font_list[font_index];
     }
     else
     {
         rows = font_row_length[0];
         font_style = font_list[0];
-        index = 1;
+        word_index = 1;
     }
 
-    for (int k = index; k < argc; k++)
+    for (int k = word_index; k < argc; k++)
     {
         char *str = argv[k];
         int   len = strlen(str);
 
         for (int i = 0; i < len; i++)
         {
-            if (alphabet(str[i]))
-            {
-                // Return array of substrings of current letter
+            if (is_alpha(str[i]))
                 read_font(str[i], font_style, ascii_art[i]);
-            }
         }
         // Print out the whole line ascii_art[i][j] in 3D array
         for (int j = 0; j < rows; j++)
@@ -103,7 +91,7 @@ int main(int argc, char **argv)
 }
 
 // Help menu
-void menu(int n)
+void help_menu(int n)
 {
     if (n == 0) // Print help menu
     {
@@ -142,13 +130,13 @@ int get_font_index(char *font_style)
     }
 
     if (invalid == FONT_NUM)
-        return -1;
+        return 0;
     else
         return font_index;
 }
 
-// Check if the letter is alphabetical
-int alphabet(char c)
+// Check if the letter is is_alphaical
+int is_alpha(char c)
 {
     if ((c > 64 && c < 91) || (c > 96 && c < 123))
         return 1;
