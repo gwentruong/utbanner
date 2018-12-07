@@ -56,13 +56,13 @@ int main(int argc, char **argv)
         else // option == "-i"
             font_index = atoi(argv[2]); // If error, return index 0
 
-        word_index  = 3;
+        word_index = 3;
     }
     else // Default style
         word_index = 1;
 
-    rows        = font_row_length[font_index];
-    font_style  = font_list[font_index];
+    rows       = font_row_length[font_index];
+    font_style = font_list[font_index];
 
     for (int k = word_index; k < argc; k++)
     {
@@ -107,7 +107,6 @@ void help_menu(int n)
                "Copyright (C) 2018 Uyen Truong\n"
                "Contact me if found bugs via haiuyentruong(at)gmail(dot)com\n");
     }
-
 }
 
 // Checking for font style
