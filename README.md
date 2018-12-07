@@ -83,8 +83,8 @@ $ utbanner [word] // Print in default style
 The source which I got font styles is [here](http://patorjk.com/software/taag-v1/).
 
 - Choose the style you like and create a new font directory in `fonts` directory.
-- Here you might have to do a bit of manual work, copy and paste the alphabet of each word from your favourite styles and but each of them in each text files.
-- Check the maximum number of line that font style has.
+- Here you might have to do a bit of manual work, copy and paste the alphabet of each word from your favourite styles and put each of them in a separated text file.
+- Check the maximum number of lines that font style has.
 - Add your font style name in the `font_list` array in utbanner.c , add the number of lines of that font to `font_row_length` array.
 
-Voila! You inserted a new font style.
+Voila! You have inserted a new font style.
