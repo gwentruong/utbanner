@@ -20,29 +20,29 @@ int main(int argc, char **argv)
 {
     if (argc <= 1)
     {
-        help_menu(0); // Return help menu
+        help_menu(0); // Invalid command, return help menu
         return 1;
     }
 
     char *option = argv[1];
     char *font_style;
-    int font_index;
-    int rows;
-    int word_index;
+    int   font_index = 0;
+    int   rows;
+    int   word_index;
 
     if (strcmp(option, "--help") == 0)
     {
-        help_menu(0);
+        help_menu(0); // Show help menu
         return 0;
     }
     else if (strcmp(option, "--version") == 0)
     {
-        help_menu(1);
+        help_menu(1); // Show version
         return 0;
     }
     else if (strcmp(option, "-f") == 0 || strcmp(option, "-i") == 0)
     {
-        if (argc < 4)
+        if (argc < 4) // Invalid command, return help menu
         {
             help_menu(0);
             return 1;
@@ -54,20 +54,15 @@ int main(int argc, char **argv)
             font_index = get_font_index(font);
         }
         else // option == "-i"
-        {
             font_index = atoi(argv[2]); // If error, return index 0
-        }
 
-        word_index = 3;
-        rows = font_row_length[font_index];
-        font_style = font_list[font_index];
+        word_index  = 3;
     }
-    else
-    {
-        rows = font_row_length[0];
-        font_style = font_list[0];
+    else // Default style
         word_index = 1;
-    }
+
+    rows        = font_row_length[font_index];
+    font_style  = font_list[font_index];
 
     for (int k = word_index; k < argc; k++)
     {
@@ -96,15 +91,15 @@ void help_menu(int n)
     if (n == 0) // Print help menu
     {
         printf("Usage: utbanner [options] [font] [word]\n"
-               "Default font: 'letters'\n"
-               "Fonts index:\n"
-               "0\tletters\n"
-               "1\talpha\n"
                "Options:\n"
                "-i\tChoose font by font index\n"
                "-f\tChoose font by font name\n"
                "--help\n\tPrint help menu\n"
-               "--version\n\tPrint the lastest version\n");
+               "--version\n\tPrint the lastest version\n"
+               "\n"
+               "  index\tfont\n"
+               "* 0\tletters (Default)\n"
+               "* 1\talpha\n");
     }
     else // Print latest version
     {
@@ -118,21 +113,13 @@ void help_menu(int n)
 // Checking for font style
 int get_font_index(char *font_style)
 {
-    int invalid = 0;
-    int font_index;
     for (int i = 0; i < FONT_NUM; i++)
     {
-        int check = strcmp(font_style, font_list[i]);
-        if (check) // Check != 0
-            invalid++;
-        else
-            font_index = i;
+        if (strcmp(font_style, font_list[i]) == 0)
+            return i;
     }
 
-    if (invalid == FONT_NUM)
-        return 0;
-    else
-        return font_index;
+    return 0;
 }
 
 // Check if the letter is is_alphaical
