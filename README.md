@@ -70,9 +70,13 @@ $ utbanner [option] [font] [words]
 $ utbanner [word] // Print in default style
 ```
 --help          Show the help menu
+
 --version       Show the latest version
+
 -f              Choose font by font name
+
 -i              Choose font by font index
+
 # Add more fonts
 
 The source which I got font styles is [here](http://patorjk.com/software/taag-v1/).
